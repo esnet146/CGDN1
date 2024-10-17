@@ -1,0 +1,144 @@
+- alias: Air Monitor Lite Online
+  description: Начальная инициализация. Удалить из второго топика параметры всегда
+    настраеваемые в ручную или измените значения
+  triggers:
+  - entity_id:
+    - binary_sensor.air_monitor_lite_online
+    from:
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - data:
+      topic: qingping/111111111111/interval
+      retain: true
+      payload: '60'
+    action: mqtt.publish
+  - data:
+      topic: qingping/111111111111/state
+      retain: true
+      payload: online
+    action: mqtt.publish
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  - data:
+      payload: '{ "type": "12", "up_itvl": "{{ states(''number.air_monitor_lite_interval'')|int(0)
+        }}", "duration": "3600"}'
+      topic: qingping/111111111111/down
+    action: mqtt.publish
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  - data:
+      payload: '{ "type": "17", "timestamp": {{ as_timestamp(now()) }} }'
+      topic: qingping/111111111111/down
+    action: mqtt.publish
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  - data:
+      topic: qingping/111111111111/down
+      payload: "{ \"type\": \"17\", \"setting\":{ \n\"co2_asc\": 0,\n\"auto_slideing_time\":\t60,\n\"screensaver_type\":\t0,\n\"power_off_time\":\t0,\n\"display_off_time\":\t600,\n\"is_12_hour_mode\":\t0,\n\"timezone\":{{
+        now() | as_timestamp | timestamp_custom('%z')|int(0)*0.1 }},\n\"page_sequence\":
+        \"temp,humi,pm25,pm10,co2\",\n\"temp_led_th\":\t\"2100,2400,2700\",\n\"humi_led_th\":\t\"3000,5000,6500\",\n\"co2_led_th\":\t\"1000,2000,3000\",\n\"pm25_led_th\":\t\"35,75,115,150,250\",\n\"pm10_led_th\":\t\"50,150,250,350,450\",\n\"co2_offset\":\t\t0,\n\"co2_zoom\":\t\t0,\n\"pm25_offset\":\t\t0,\n\"pm25_zoom\":\t\t0,\n\"pm10_offset\":\t\t0,\n\"pm10_zoom\":\t\t0,\n\"pm25_calib_mode\":\t0,\n\"temperature_offset\":\t-180,\n\"temperature_zoom\":\t0,\n\"humidity_offset\":\t0,\n\"humidity_zoom\":\t0\n}}\n"
+    action: mqtt.publish
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  - data:
+      topic: qingping/111111111111/down
+      payload: '{"type":"28"}'
+    action: mqtt.publish
+    enabled: false
+  mode: single
+
+- alias: Air Monitor Lite Offline 
+  description: Пишем в топик брокера что устройство пропало
+  triggers:
+  - entity_id:
+    - binary_sensor.air_monitor_lite_online
+    from:
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - data:
+      topic: qingping/111111111111/state
+      retain: true
+      payload: offline
+    action: mqtt.publish
+  mode: single
+
+= alias: Air monitor Lite update MQTT interval
+  description: настройка интервалов и длительности рапортов 
+  triggers:
+  - entity_id:
+    - number.air_monitor_lite_interval
+    trigger: state
+  conditions:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: number.air_monitor_lite_interval
+      state: unavailable
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: number.air_monitor_lite_interval
+      state: unknown
+  actions:
+  - data:
+      qos: 0
+      retain: false
+      topic: qingping/111111111111/down
+      payload: '{ "type": "12", "up_itvl": "{{ states(''number.air_monitor_lite_interval'')|int(0)
+        }}", "duration": "3600"}'
+    action: mqtt.publish
+  mode: single
+
+= alias: Air Monitor Lite auto MQTT update interval
+  description: продление и настройка интервалов, длительности рапортов + синхронизация
+    времени
+  triggers:
+  - hours: /1
+    trigger: time_pattern
+  conditions: []
+  actions:
+  - data:
+      qos: 0
+      retain: false
+      topic: qingping/111111111111/down
+      payload: '{ "type": "12", "up_itvl": "{{ states(''number.air_monitor_lite_interval'')|int(0)
+        }}", "duration": "3600"}'
+    action: mqtt.publish
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - data:
+      qos: 0
+      retain: false
+      payload: '{ "type": "17", "timestamp": {{ as_timestamp(now()) }} }'
+      topic: qingping/111111111111/down
+    action: mqtt.publish
+  mode: single
+
+
