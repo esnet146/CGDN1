@@ -1,0 +1,843 @@
+mqtt:
+  switch:
+    - unique_id: air_monitor_lite_co2_asc
+      object_id: air_monitor_lite_co2_asc
+      name: "Автокалибровка CO2"
+      icon: "mdi:auto-fix"
+      entity_category: diagnostic
+      enabled_by_default: false
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+      state_topic: "qingping/111111111111/up"
+      command_topic: "qingping/111111111111/down"
+      value_template: '{{ value_json.setting.co2_asc if value_json.type == "28" }}'
+      payload_on: 1
+      payload_off: 0
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "co2_asc": {{ value }}
+          }
+        }
+      state_on: 1
+      state_off: 0
+  number:
+    - unique_id: air_monitor_lite_interval
+      object_id: air_monitor_lite_interval
+      name: "Интервал обновления сенсоров"
+      min: 10
+      max: 600
+      step: 1
+      mode: slider
+      unit_of_measurement: "s"
+      enabled_by_default: true
+      command_topic: qingping/111111111111/interval
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+
+    - unique_id: air_monitor_lite_pm_sampling_interval
+      object_id: air_monitor_lite_pm_sampling_interval
+      name: "?Интервал измерения пыли?"
+      min: 0
+      max: 300
+      step: 1
+      mode: slider
+      unit_of_measurement: "шт."
+      enabled_by_default: false
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.pm_sampling_interval if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "pm_sampling_interval": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_display_off_time
+      object_id: air_monitor_lite_display_off_time
+      name: "Задержка отключения дисплея"
+      icon: "mdi:monitor-off"
+      unit_of_measurement: s
+      min: 0
+      max: 300
+      step: 1
+      mode: slider
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.display_off_time if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "display_off_time": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_power_off_time
+      object_id: air_monitor_lite_power_off_time
+      name: "Задержка отключения питания"
+      icon: "mdi:power-plug-battery-outline"
+      unit_of_measurement: min
+      min: 0
+      max: 60
+      step: 1
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.power_off_time if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "power_off_time": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_auto_slideing_time
+      object_id: air_monitor_lite_auto_slideing_time
+      name: "Задержка включения анимации"
+      icon: "mdi:monitor-eye"
+      unit_of_measurement: s
+      min: 0
+      max: 120
+      step: 1
+      state_topic: qingping/111111111111/up
+      value_template: '{{ (value_json.setting.auto_slideing_time) if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "auto_slideing_time": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_time_zone
+      object_id: air_monitor_lite_time_zone
+      name: "Часовой пояс"
+      icon: "mdi:map-clock"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -12
+      max: 14
+      step: 0.5
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ (value_json.setting.timezone)*0.1 if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "timezone": {{ (value)*10 }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_co2_offset
+      object_id: air_monitor_lite_co2_offset
+      name: "CO2, смещение показаний"
+      icon: "mdi:molecule-co2"
+      unit_of_measurement: "ppm"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -9999
+      max: 9999
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.co2_offset if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "co2_offset": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_co2_zoom
+      object_id: air_monitor_lite_co2_zoom
+      name: "CO2, % показаний"
+      icon: "mdi:molecule-co2"
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -99
+      max: 99
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.co2_zoom if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "co2_zoom": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_temperature_offset
+      object_id: air_monitor_lite_temperature_offset
+      name: "Температура, смещение показаний"
+      icon: "mdi:thermometer-lines"
+      unit_of_measurement: "°C"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -50
+      max: 50
+      step: 0.1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ (value_json.setting.temperature_offset)*0.01 if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "temperature_offset": {{ (value)*100 }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_temperature_zoom
+      object_id: air_monitor_lite_temperature_zoom
+      name: "Температура, % показаний"
+      icon: "mdi:thermometer-lines"
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -99
+      max: 99
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ (value_json.setting.temperature_zoom)*0.01 if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "temperature_zoom": {{ (value)*100 }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_humidity_offset
+      object_id: air_monitor_lite_humidity_offset
+      name: "Влажность, смещение показаний"
+      icon: "mdi:water-opacity"
+      unit_of_measurement: "%RH"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -99
+      max: 99
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.humidity_offset if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "humidity_offset": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_humidity_zoom
+      object_id: air_monitor_lite_humidity_zoom
+      name: "Влажность, % показаний"
+      icon: "mdi:water-opacity"
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -99
+      max: 99
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.humidity_zoom if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "humidity_zoom": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_pm25_offset
+      object_id: air_monitor_lite_pm25_offset
+      name: "PM25, смещение показаний"
+      icon: "mdi:molecule"
+      unit_of_measurement: "PPM"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -9999
+      max: 9999
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.pm25_offset if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "pm25_offset": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_pm25_zoom
+      object_id: air_monitor_lite_pm25_zoom
+      name: "PM25, % показаний"
+      icon: "mdi:molecule"
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -99
+      max: 99
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.pm25_zoom if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "pm25_zoom": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_pm10_offset
+      object_id: air_monitor_lite_pm10_offset
+      name: "PM10, смещение показаний"
+      icon: "mdi:molecule"
+      unit_of_measurement: "PPM"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -9999
+      max: 9999
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.pm10_offset if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "pm10_offset": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+    - unique_id: air_monitor_lite_pm10_zoom
+      object_id: air_monitor_lite_pm10_zoom
+      name: "PM10, % показаний"
+      icon: "mdi:molecule"
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+      enabled_by_default: false
+      min: -99
+      max: 99
+      step: 1
+      mode: box
+      state_topic: qingping/111111111111/up
+      value_template: '{{ value_json.setting.pm10_zoom if value_json.type == "28" }}'
+      command_topic: qingping/111111111111/down
+      command_template: |-
+        {
+          "type": "17",
+          "setting": {
+            "pm10_zoom": {{ value }}
+          }
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+
+  button:
+      unique_id: air_monitor_lite_co2_calibration
+      object_id: air_monitor_lite_co2_calibration 
+      name: "Калибровка CO2"
+      entity_category: diagnostic
+      enabled_by_default: false
+      command_topic: "qingping/111111111111/down"
+      command_template: |-
+        {
+          "type": "29"
+        }
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+  select:
+      unique_id: air_monitor_lite_screensaver_type
+      object_id: air_monitor_lite_screensaver_type
+      name: "Хранитель экрана"
+      icon: "mdi:monitor-dashboard"
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {% if value_json.type == "28" %}
+          {% set map = ['Все сенсоры', 'Текущий сенсор', 'Часы и все сенсоры', 'Часы и текущий сенсор'] %}
+          {{ map[value_json.setting.screensaver_type] }}      
+        {% endif %}    
+      command_topic: "qingping/111111111111/down"
+      command_template: >
+        {% set map = {
+          "Все сенсоры": 0,
+          "Текущий сенсор": 1,
+          "Часы и все сенсоры": 2,
+          "Часы и текущий сенсор": 3
+            }
+        %}
+        {"type": "17", "setting": { "screensaver_type": {{ map[value] }} }}
+      options:
+        - "Все сенсоры"
+        - "Текущий сенсор"
+        - "Часы и все сенсоры"
+        - "Часы и текущий сенсор"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      availability:
+        - topic: "qingping/111111111111/state"
+  binary_sensor:
+    - unique_id: air_monitor_lite_online
+      object_id: air_monitor_lite_online
+      device_class: connectivity
+      entity_category: diagnostic
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      state_topic: "qingping/111111111111/up"
+      off_delay: 60
+      payload_off: "OFF"
+      payload_on: "ON"
+      value_template:  >-
+         {{ "ON" if value_json else "OFF" }}
+      availability:
+        - topic: "qingping/111111111111/up"
+          payload_available: "true"
+          payload_not_available: "false"
+          value_template: >-
+            {{ "true" if value_json else "false" }}
+
+    - unique_id: air_monitor_lite_power
+      object_id: air_monitor_lite_power
+      device_class: power
+      name: "Внешнее питание"
+      entity_category: diagnostic
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      state_topic: "qingping/111111111111/up"
+      payload_off: "OFF"
+      payload_on: "ON"
+      value_template:  >-
+         {% if value_json.type=="12" %}
+            {% if value_json.sensorData.0.battery.status =="0" -%}
+                {{ "OFF" }}
+            {%- else -%}
+                {{ "ON" }}
+            {% endif %}
+         {% else %}    
+            {{ this.state }}
+         {% endif %}
+      availability:
+        - topic: "qingping/111111111111/state"
+
+    - unique_id: air_monitor_lite_battery_charging
+      object_id: air_monitor_lite_battery_charging
+      device_class: battery_charging
+      name: "Зарядка батареи"
+      entity_category: diagnostic
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      state_topic: "qingping/111111111111/up"
+      payload_off: "OFF"
+      payload_on: "ON"
+      value_template:  >-
+         {% if value_json.type=="12" %}
+            {% if value_json.sensorData.0.battery.status =="1" -%}
+                {{ "ON" }}
+            {%- else -%}
+                {{ "OFF" }}
+            {% endif %}
+         {% else %}    
+            {{ this.state }}
+         {% endif %}
+      availability:
+        - topic: "qingping/111111111111/state"
+
+
+  text:
+    - unique_id: air_monitor_lite_night_mode_start_time_txt
+      object_id: air_monitor_lite_night_mode_start_time_txt
+      name: время выключения дисплея
+      icon: "mdi:home-clock-outline"
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {% if value_json.type == "28" -%}
+            {% set hour = ((value_json.setting.night_mode_start_time)|int(0)/60)|int(0)|string %}
+            {% if hour| length  == 1 %}
+                {%  set hour = ("0" + hour) %}
+            {%- endif %}
+            {% set minutes = 
+            (value_json.setting.night_mode_start_time -
+            (value_json.setting.night_mode_start_time|int(0)/60)|int(0)*60)|string %}
+            {% if minutes | length  == 1 -%}
+                {% set minutes = ("0" + minutes) %}
+            {%- endif %}
+            {{ hour + ":" + minutes }}
+        {%- else -%}
+            {{ this.state }}
+        {%- endif -%}
+      command_topic: "qingping/111111111111/down"
+      min: 5
+      max: 5
+      command_template: >
+        {"type": "17", "setting": { "night_mode_start_time": {{ (((value.split(":")[0])|int(0))*60 + (value.split(":")[1])|int(0))|string }}  }}
+
+    - unique_id: air_monitor_lite_night_mode_end_time_txt
+      object_id: air_monitor_lite_night_mode_end_time_txt
+      name: время включениял дисплея
+      icon: "mdi:home-clock"
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {% if value_json.type == "28" -%}
+            {% set hour = ((value_json.setting.night_mode_end_time)|int(0)/60)|int(0)|string %}
+            {% if hour| length  == 1 %}
+                {%  set hour = ("0" + hour) %}
+            {%- endif %}
+            {% set minutes = 
+            (value_json.setting.night_mode_end_time -
+            (value_json.setting.night_mode_end_time|int(0)/60)|int(0)*60)|string %}
+            {% if minutes | length  == 1 -%}
+                {% set minutes = ("0" + minutes) %}
+            {%- endif %}
+            {{ hour + ":" + minutes }}
+        {%- else -%}
+            {{ this.state }}
+        {%- endif -%}
+      command_topic: "qingping/111111111111/down"
+      min: 5
+      max: 5
+      command_template: >
+        {"type": "17", "setting": { "night_mode_end_time": {{ (((value.split(":")[0])|int(0))*60 + (value.split(":")[1])|int(0))|string }}  }}
+
+  sensor:
+    - unique_id: air_monitor_lite_timestamp
+      object_id: air_monitor_lite_timestamp
+      name: "Время на устройстве"
+      icon: "mdi:clock"
+      state_topic: "qingping/111111111111/up"
+      entity_category: diagnostic
+      enabled_by_default: true
+      value_template: >-
+        {{ as_datetime( value_json.timestamp ).timestamp() |timestamp_custom('%H:%M %d.%m.%Y ')
+          if value_json.type=="12" or value_json.type=="13" else this.state }}
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+    # - object_id: air_monitor_lite_battery_status
+    #   unique_id: air_monitor_lite_battery_status
+    #   name: "Статус батареи"
+    #   state_topic: "qingping/111111111111/up"
+    #   entity_category: diagnostic
+    #   enabled_by_default: false
+    #   value_template: >
+    #     {% if value_json.type=="12" %}
+    #       {% set map = ['Разрядка', 'Зарядка', 'Заряжена'] %}
+    #       {{ map[value_json.sensorData.0.battery.status] }}
+    #     {% else %}
+    #       {{ this.state }}
+    #     {% endif %}
+    #   availability:
+    #     - topic: "qingping/111111111111/state"
+    #   device:
+    #     identifiers: ["111111111111"]
+    #     name: "Air monitor Lite"
+    #     model: "CGDN1"
+    #     manufacturer: "qingping"
+
+    - unique_id: air_monitor_lite_co2
+      object_id: air_monitor_lite_co2
+      name: "Уровень CO2"
+      device_class: carbon_dioxide
+      unit_of_measurement: "ppm"
+      state_class: measurement
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {{ value_json.sensorData.0.co2.value
+          if value_json.type=="12" else this.state }}
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+    - unique_id: air_monitor_lite_pm25
+      object_id: air_monitor_lite_pm25
+      name: "PM2.5"
+      device_class: pm25
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {{ value_json.sensorData.0.pm25.value 
+          if value_json.type=="12" else this.state }}
+      unit_of_measurement: "µg/m³"
+      state_class: measurement
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+    - unique_id: air_monitor_lite_pm10
+      object_id: air_monitor_lite_pm10
+      name: "PM10"
+      device_class: pm10
+      unit_of_measurement: "µg/m³"
+      state_class: measurement
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {{ value_json.sensorData.0.pm10.value 
+          if value_json.type=="12" else this.state }}
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+    - unique_id: air_monitor_lite_humidity
+      object_id: air_monitor_lite_humidity
+      name: "Влажность"
+      device_class: humidity
+      unit_of_measurement: "%"
+      state_class: measurement
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {{ value_json.sensorData.0.humidity.value|round(0)
+          if value_json.type=="12" else this.state }}
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+    - unique_id: air_monitor_lite_temperature
+      object_id: air_monitor_lite_temperature
+      name: "Температура"
+      device_class: temperature
+      unit_of_measurement: "°C"
+      state_class: measurement
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {{ value_json.sensorData.0.temperature.value|round(2)
+            if value_json.type=="12" else this.state }}
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+
+    - unique_id: air_monitor_lite_battery
+      object_id: air_monitor_lite_battery
+      name: "Заряд АКБ"
+      device_class: battery
+      unit_of_measurement: "%"
+      state_class: measurement
+      state_topic: "qingping/111111111111/up"
+      value_template: >-
+        {{ value_json.sensorData.0.battery.value|round(0)
+            if value_json.type=="12" else this.state }}
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+    - object_id: air_monitor_lite_rssi
+      unique_id: air_monitor_lite_rssi
+      name: "Уровень сигнала"
+      state_topic: "qingping/111111111111/up"
+      entity_category: diagnostic
+      enabled_by_default: false
+      state_class: measurement
+      unit_of_measurement: dBm
+      device_class: signal_strength
+      value_template: >-
+        {% if value_json.type == "13" %}
+            {{ value_json.wifi_info.split(",")[1] }}
+        {% else %}
+            {{ this.state }}
+        {% endif %}    
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+
+
+    - unique_id: air_monitor_lite_version
+      object_id: air_monitor_lite_version
+      name: "Версия прошивки"
+      state_topic: "qingping/111111111111/up"
+      entity_category: diagnostic
+      enabled_by_default: false
+      value_template: >-
+        {% if value_json.type == "12" %}
+            {{ value_json.version }}
+        {% elif value_json.type == "13" %}
+            {{ value_json.sw_version }}
+        {% else %}
+            {{ this.state }}
+        {% endif %}    
+      availability:
+        - topic: "qingping/111111111111/state"
+      device:
+        identifiers: ["111111111111"]
+        name: "Air monitor Lite"
+        model: "CGDN1"
+        manufacturer: "qingping"
+
+
