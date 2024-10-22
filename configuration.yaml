@@ -545,7 +545,7 @@ mqtt:
       payload_on: "ON"
       value_template:  >-
          {% if value_json.type=="12" %}
-            {% if value_json.sensorData.0.battery.status =="0" -%}
+            {% if value_json.sensorData.0.battery.status ==0 -%}
                 {{ "OFF" }}
             {%- else -%}
                 {{ "ON" }}
@@ -571,7 +571,7 @@ mqtt:
       payload_on: "ON"
       value_template:  >-
          {% if value_json.type=="12" %}
-            {% if value_json.sensorData.0.battery.status =="1" -%}
+            {% if value_json.sensorData.0.battery.status ==1 -%}
                 {{ "ON" }}
             {%- else -%}
                 {{ "OFF" }}
