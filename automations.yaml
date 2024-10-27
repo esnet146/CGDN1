@@ -86,7 +86,7 @@
     action: mqtt.publish
   mode: single
 
-= alias: Air monitor Lite update MQTT interval
+- alias: Air monitor Lite update MQTT interval
   description: настройка интервалов и длительности рапортов 
   triggers:
   - entity_id:
@@ -113,7 +113,7 @@
     action: mqtt.publish
   mode: single
 
-= alias: Air Monitor Lite auto MQTT update interval
+- alias: Air Monitor Lite auto MQTT update interval
   description: продление и настройка интервалов, длительности рапортов + синхронизация
     времени
   triggers:
